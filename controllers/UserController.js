@@ -5,13 +5,13 @@ import UserModel from '../models/User.js';
 
 export const register = async (req, res) => {
     try {
-        const password = req.body.password;
+        const password = req.body.password; // getting password from request
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
+        const hash = await bcrypt.hash(password, salt); // hashing password with salt
 
-        const doc = new UserModel({
+        const doc = new UserModel({ 
             email: req.body.email,
-            fullname: req.body.fullname,
+            fullName: req.body.fullName,
             avatarUrl: req.body.avatarUrl,
             passwordHash: hash,
         });
@@ -20,7 +20,7 @@ export const register = async (req, res) => {
 
         const token = jwt.sign(
             {
-                _id: user_.id,
+                _id: user._id,
             }, 
             'secretcode',
             {
@@ -44,23 +44,23 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-      const user = await UserModel.findOne({ email: req.body.email });
+      const user = await UserModel.findOne({ email: req.body.email }); // Поиск пользователя по почте
   
-      if (!user) {
+      if (!user) { // Если пользователя нет, выкидываем ошибку
         return res.status(404).json({
           message: 'Пользователь не найден',
         });
       }
   
-      const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
+      const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash); // Сравнение паролей
   
-      if (!isValidPass) {
+      if (!isValidPass) { // Если пароль не подошел
         return res.status(400).json({
           message: 'Неверный логин или пароль',
         });
       }
   
-      const token = jwt.sign(
+      const token = jwt.sign( // Если всё ок, создаем токен
         {
           _id: user._id,
         },
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
   
       const { passwordHash, ...userData } = user._doc;
   
-      res.json({
+      res.json({ 
         ...userData,
         token,
       });
@@ -82,9 +82,9 @@ export const login = async (req, res) => {
         message: 'Не удалось авторизоваться',
       });
     }
-  };
+};
   
-  export const getMe = async (req, res) => {
+  export const getMe = async (req, res) => { // Получение информации о себе
     try {
       const user = await UserModel.findById(req.userId);
   
@@ -103,4 +103,4 @@ export const login = async (req, res) => {
         message: 'Нет доступа',
       });
     }
-  };
+};
