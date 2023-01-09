@@ -7,7 +7,7 @@ import { registerValidation, loginValidation } from './validations/auth.js';
 import {checkAuth } from './utils/index.js';
 
 
-import { UserController, CaseController } from './controllers/index.js';
+import { UserController, TaskController } from './controllers/index.js';
 
 const DB_URL = "mongodb+srv://MykytaChaika:hyper2003@todolist.he0tlqk.mongodb.net/todolist?retryWrites=true&w=majority"
 
