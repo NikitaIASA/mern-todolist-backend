@@ -2,6 +2,10 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
+import { registerValidation, loginValidation } from './validations/auth.js';
+
+import { UserController, CaseController } from './controllers/index.js';
+
 const DB_URL = "mongodb+srv://MykytaChaika:hyper2003@todolist.he0tlqk.mongodb.net/?retryWrites=true&w=majority"
 
 mongoose
@@ -11,9 +15,18 @@ mongoose
 
 const app = express();
 
+app.use(express.json());
+
+
+app.post('/auth/login', loginValidation, UserController.login);
+app.post('/auth/register', registerValidation, UserController.register);
+// app.get('/auth/me', checkAuth, UserController.getMe);
+
+
 app.get('/', (req, res) =>  {
     res.send('Hello world!');
 });
+
 
 app.listen(4444, (err) => {
     if (err) {
