@@ -2,7 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-import { registerValidation, loginValidation } from './validations/auth.js';
+import { registerValidation, loginValidation, taskCreateValidation } from './validations.js';
 
 import {checkAuth } from './utils/index.js';
 
@@ -20,15 +20,24 @@ const app = express();
 
 app.use(express.json());
 
+// AUTH
 
 app.post('/auth/login', loginValidation, UserController.login);
 app.post('/auth/register', registerValidation, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
+// CRUD
 
-app.get('/', (req, res) =>  {
-    res.send('Hello world!');
-});
+app.get('/tasks', TaskController.getAllTaks);
+app.get('/tasks/:id', TaskController.getOneTask);
+app.post('/tasks', checkAuth, taskCreateValidation, TaskController.createTask);
+app.delete('/tasks/:id', checkAuth, TaskController.removeTask);
+app.patch(
+    '/tasks/:id',
+    checkAuth,
+    taskCreateValidation,
+    TaskController.updateTask,
+  );
 
 
 app.listen(4444, (err) => {
