@@ -16,10 +16,9 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
     avatarUrl: String,
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }]
   },
-  {
-    timestamps: true,
-  },
+  
 );
 
 export default mongoose.model('User', UserSchema);

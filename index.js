@@ -23,13 +23,13 @@ app.use(express.json());
 // AUTH
 
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
-app.post('/auth/register', registerValidation,handleValidationErrors,  UserController.register);
+app.post('/auth/register',registerValidation, handleValidationErrors,  UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
 // CRUD
 
-app.get('/tasks', TaskController.getAllTaks);
-app.get('/tasks/:id', TaskController.getOneTask);
+app.get('/tasks', checkAuth, TaskController.getAllTasks);
+app.get('/tasks/:id',checkAuth ,TaskController.getOneTask);
 app.post('/tasks', checkAuth, taskCreateValidation, handleValidationErrors, TaskController.createTask);
 app.delete('/tasks/:id', checkAuth, TaskController.removeTask);
 app.patch(
