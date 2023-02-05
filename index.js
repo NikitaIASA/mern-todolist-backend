@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 import { registerValidation, loginValidation, taskCreateValidation } from './validations.js';
 
@@ -19,6 +20,7 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 // AUTH
 
