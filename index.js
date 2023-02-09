@@ -32,6 +32,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 
 app.get('/tasks', checkAuth, TaskController.getAllTasks);
 app.get('/tasks/:id',checkAuth ,TaskController.getOneTask);
+app.post('/tasks/:id',checkAuth ,TaskController.completeTask);
 app.post('/tasks', checkAuth, taskCreateValidation, handleValidationErrors, TaskController.createTask);
 app.delete('/tasks/:id', checkAuth, TaskController.removeTask);
 app.patch(
@@ -41,6 +42,7 @@ app.patch(
     handleValidationErrors,
     TaskController.updateTask,
   );
+
 
 
 app.listen(4444, (err) => {

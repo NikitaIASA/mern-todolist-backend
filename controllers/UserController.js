@@ -10,12 +10,6 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt); // hashing password with salt
 
-        // const doc = new UserModel({ 
-        //     email: req.body.email,
-        //     fullName: req.body.fullName,
-        //     avatarUrl: req.body.avatarUrl,
-        //     passwordHash: hash,
-        // });
         const doc = new UserModel({ 
           email,
           fullName,

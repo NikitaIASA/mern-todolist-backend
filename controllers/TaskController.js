@@ -3,7 +3,7 @@ import UserModel from '../models/User.js';
 
 export const createTask = async (req, res) => {
   try {
-    const {title, completed, specialSelected, priority, desc} = req.body;
+    const {title, desc, completed, specialSelected, priority} = req.body;
 
    const user = await UserModel.findById(req.userId);
     
@@ -52,7 +52,7 @@ export const removeTask = async (req, res) => {
         });
       },
     );
-    const user = await UserModel.findById(req.userId); // doesn't work
+    const user = await UserModel.findById(req.userId); 
     user.tasks = user.tasks.filter(t => t._id.toString() !== taskId.toString());
     await user.save();
 
@@ -79,38 +79,11 @@ export const getAllTasks = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId).populate('tasks');
 
-    return res.status(200).json({ tasks: user.tasks });
+    return res.status(200).json(user.tasks);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
-
-// export const updateTask = async (req, res) => {
-//   try {
-//     const taskId = await TaskModel.findById(req.params.id);
-
-//     await TaskModel.updateOne(
-//       {
-//         _id: taskId,
-//       },
-//       {
-//         title: req.body.title,
-//         completed: req.body.completed,
-//         specialSelected: req.body.specialSelected,
-//         priority: req.body.priority,
-//         desc: req.body.desc,
-//       },
-//     );
-//     res.json({
-//       success: true,
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({
-//       message: 'Не удалось обновить задачу',
-//     });
-//   }
-// };
 
 export const updateTask = async (req, res) => {
   try {
@@ -144,5 +117,20 @@ export const updateTask = async (req, res) => {
   }
 };
 
+export const completeTask = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const task = await TaskModel.findById(taskId);
+    task.completed = true;
+    await task.save();
+
+    const user = await UserModel.findById(req.userId);
+    await user.save();
+    res.json({ message: 'Task completed successfully' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Could not complete task' });
+  }
+};
 
 
