@@ -117,11 +117,11 @@ export const updateTask = async (req, res) => {
   }
 };
 
-export const completeTask = async (req, res) => {
+export const toggleTaskCompletion = async (req, res) => {
   try {
     const taskId = req.params.id;
     const task = await TaskModel.findById(taskId);
-    task.completed = true;
+    task.completed = !task.completed;
     await task.save();
 
     const user = await UserModel.findById(req.userId);
