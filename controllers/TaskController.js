@@ -75,10 +75,39 @@ export const getOneTask = async (req, res) => {
   }
 };
 
-export const getAllTasks = async (req, res) => {
+export const getCompletedTasks = async (req, res) => {
   try {
-    const user = await UserModel.findById(req.userId).populate('tasks');
+    const { status } = req.query;
+    const query = typeof status === 'boolean' ? { completed: status } : {};
+    const tasks = await TaskModel.find(query);
+    return res.status(200).json({ tasks });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
+// export const getAllTasks = async (req, res) => {
+//   try {
+//     const user = await UserModel.findById(req.userId).populate('tasks');
+
+//     return res.status(200).json(user.tasks);
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+
+export const getAllTasks = async (req, res) => {
+  const match = {};
+
+  if (req.query.completed) {
+    match.completed = req.query.completed === 'true';
+  }
+
+  try {
+    const user = await UserModel.findById(req.userId).populate({
+      path: 'tasks',
+      match
+    });
     return res.status(200).json(user.tasks);
   } catch (error) {
     return res.status(500).json({ error: error.message });
