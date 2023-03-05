@@ -36,6 +36,8 @@ app.get('/tasks/:status', checkAuth, TaskController.getAllTasks);
 app.post('/tasks/:id',checkAuth ,TaskController.toggleTaskCompletion);
 app.post('/tasks', checkAuth, taskCreateValidation, handleValidationErrors, TaskController.createTask);
 app.delete('/tasks/:id', checkAuth, TaskController.removeTask);
+app.delete('/tasks', checkAuth, TaskController.removeAllTasks);
+app.delete('/tasks-done', checkAuth, TaskController.removeCompletedTasks);
 app.patch(
     '/tasks/:id',
     checkAuth,

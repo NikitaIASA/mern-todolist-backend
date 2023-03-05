@@ -19,6 +19,7 @@ export const createTask = async (req, res) => {
     user.tasks.push(task);
     await user.save();
     res.json(task);
+    console.log(req);
   } catch (err) {
     console.log(err);
     res.status(500).json({message: 'Не удалось создать задачу',});
@@ -64,6 +65,66 @@ export const removeTask = async (req, res) => {
   }
 };
 
+export const removeAllTasks = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Пользователь не найден',
+      });
+    }
+
+    const deletedTasks = await TaskModel.deleteMany({
+      _id: { $in: user.tasks },
+    });
+
+    user.tasks = [];
+
+    await user.save();
+
+    res.json({
+      success: true,
+      deletedCount: deletedTasks.deletedCount,
+    });
+  } catch (err) {
+      res.status(500).json({
+      message: 'Не удалось удалить задачи',
+    });
+  }
+};
+
+export const removeCompletedTasks = async (req, res) => {
+  try {
+
+    const user = await UserModel.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'Пользователь не найден',
+      });
+    }
+
+    const deletedTasks = await TaskModel.deleteMany({
+      _id: { $in: user.tasks },
+      completed: true,
+    });
+
+    user.tasks = user.tasks.filter((task) => !task.completed);
+
+    await user.save();
+
+    res.json({
+      success: true,
+      deletedCount: deletedTasks.deletedCount,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось удалить задачи',
+    });
+  }
+};
+
 export const getOneTask = async (req, res) => {
   try {
     const taskId = req.params.id;
@@ -75,22 +136,12 @@ export const getOneTask = async (req, res) => {
   }
 };
 
-export const getCompletedTasks = async (req, res) => {
-  try {
-    const { status } = req.query;
-    const query = typeof status === 'boolean' ? { completed: status } : {};
-    const tasks = await TaskModel.find(query);
-    return res.status(200).json({ tasks });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-
-// export const getAllTasks = async (req, res) => {
+// export const getCompletedTasks = async (req, res) => {
 //   try {
-//     const user = await UserModel.findById(req.userId).populate('tasks');
-
-//     return res.status(200).json(user.tasks);
+//     const { status } = req.query;
+//     const query = typeof status === 'boolean' ? { completed: status } : {};
+//     const tasks = await TaskModel.find(query);
+//     return res.status(200).json({ tasks });
 //   } catch (error) {
 //     return res.status(500).json({ error: error.message });
 //   }
@@ -161,5 +212,6 @@ export const toggleTaskCompletion = async (req, res) => {
     res.status(500).json({ message: 'Could not complete task' });
   }
 };
+
 
 
