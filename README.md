@@ -15,6 +15,7 @@ The front-end of the application is built using:
  - Material UI library
  - React-hook-form
  - Axios: for connecting with the back-end.
+ - React Router v6: An implementation of modular routing approach, which helps to navigate between different pages of the application.
  
  # Back-end 
 The front-end of the application is built using:
